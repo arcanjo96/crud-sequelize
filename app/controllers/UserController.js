@@ -3,20 +3,25 @@ const { User } = require('../models');
 module.exports = {
     async index(req, res) {
         const users = await User.findAll({
-            attributes: ['name', 'email']
+            attributes: ['id', 'name', 'email']
         });
-        res.json(users);
+        //res.json(users);
+        res.render('users', { data: users });
     },
 
     async create(req, res) {
         console.log(req.body);
         const user = await User.create(req.body);
-        res.json(user);
+        //res.json(user);
+
+        const users = await User.findAll({
+            attributes: ['id', 'name', 'email']
+        });
+
+        res.render('users.ejs', { data: users });
     },
 
     async update(req, res) {
-        console.log(req.body);
-        const data = req.body;
         const user = await User.update({
             name: req.body.name,
             email: req.body.email,
@@ -27,7 +32,12 @@ module.exports = {
                 }
             });
 
-        res.json(user);
+        //res.json(user);
+        const users = await User.findAll({
+            attributes: ['id', 'name', 'email']
+        });
+
+        res.render('users.ejs', { data: users });
     },
 
     async destroy(req, res) {
@@ -37,18 +47,31 @@ module.exports = {
             }
         });
 
-        res.json(user);
+        const users = await User.findAll({
+            attributes: ['id', 'name', 'email']
+        });
+        //res.json(user);
+
+        res.render('users', { data: users });
     },
 
     async find(req, res) {
         const user = await User.findAll({
-            attributes: ['name', 'email']
-        }, {
-                where: {
-                    id: req.params.id
-                }
-            });
+            where: {
+                id: req.params.id
+            }
+        });
+        //res.json(user);
+        res.render('showUser', { data: user });
+    },
 
-        res.json(user);
+    async edit(req, res) {
+        const user = await User.findAll({
+            where: {
+                id: req.params.id
+            }
+        });
+        //res.json(user);
+        res.render('editUser', { data: user });
     }
 }
